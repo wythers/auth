@@ -1,3 +1,5 @@
+<img src="http://i.imgur.com/fPIgqLg.jpg"/>  
+
 # Modern Auth Middlewares for Gin
 
 A modern authentication Middlewares for Gin, inspired by and reimagined from Authboss.
