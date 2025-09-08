@@ -1,6 +1,6 @@
-# Modern Auth Framework for Gin
+# Modern Auth Middlewares for Gin
 
-A modern authentication framework for Gin, inspired by and reimagined from Authboss.
+A modern authentication Middlewares for Gin, inspired by and reimagined from Authboss.
 
 ## Why This Project?
 
