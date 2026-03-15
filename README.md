@@ -86,9 +86,9 @@ This framework follows a modular design where each authentication feature is imp
 - **`limit/`** - Rate limiting functionality
 - **`lock/`** - Account locking mechanisms
 - **`mail/`** - Email sending and templating
-- **`oauth2/`** - OAuth2 integration (TODO)
-- **`otp/`** - One-time password system (TODO)
-- **`captcha/`** - CAPTCHA support (Cloudflare Turnstile) (TODO)
+- **`oauth2/`** - OAuth2 integration(TODO)
+- **`otp/`** - One-time password system(TODO)
+- **`captcha/`** - CAPTCHA support (Cloudflare Turnstile)(TODO)
 
 
 ## Documentation
