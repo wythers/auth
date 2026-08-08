@@ -8,9 +8,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"crypto/sha256"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/securecookie"
 	"github.com/wythers/auth"
 	"go.uber.org/zap"
 )
@@ -96,52 +98,52 @@ func TestLoginHandler_PasswordLogin_SetsCookie(t *testing.T) {
 	}
 }
 
-// func TestLoginHandler_WithAccessTokenCookie(t *testing.T) {
-// 	gin.SetMode(gin.TestMode)
+func TestLoginHandler_WithAccessTokenCookie(t *testing.T) {
+	gin.SetMode(gin.TestMode)
 
-// 	// mock Engine
-// 	e := &auth.Engine{}
-// 	e.Storage.Server = &mockUserServer{}
-// 	e.Utils.Hasher = &mockHasher{}
-// 	e.Logger, _ = zap.NewDevelopment()
-// 	// 配置 CookieSecret 供 ParseMiddleware 与测试编码使用
-// 	e.Config.CookieSecret = []byte("test-cookie-secret")
+	// mock Engine
+	e := &auth.Engine{}
+	e.Storage.Server = &mockUserServer{}
+	e.Utils.Hasher = &mockHasher{}
+	e.Logger, _ = zap.NewDevelopment()
+	// 配置 CookieSecret 供 ParseMiddleware 与测试编码使用
+	e.Config.CookieSecret = []byte("test-cookie-secret")
 
-// 	r := gin.New()
-// 	// 使用 ParseMiddleware 从 Cookie 解出 pid
-// 	r.Use(e.ParseMiddleware)
-// 	r.POST("/login", Handler[mockUser](e)...) // 不需要额外中间件设置 pid
+	r := gin.New()
+	// 使用 ParseMiddleware 从 Cookie 解出 pid
+	r.Use(e.ParseMiddleware)
+	r.POST("/login", Handler[mockUser](e)...) // 不需要额外中间件设置 pid
 
-// 	// 构造加密的 access_token Cookie，载荷含 pid
-// 	hashKey := e.Config.CookieSecret
-// 	encKey := sha256.Sum256(append([]byte("enc:"), e.Config.CookieSecret...))
-// 	sc := securecookie.New(hashKey, encKey[:])
-// 	val, err := sc.Encode("access_token", struct{ PID string }{PID: "testuser"})
-// 	if err != nil {
-// 		t.Fatalf("encode cookie failed: %v", err)
-// 	}
+	// 构造加密的 access_token Cookie，载荷含 pid
+	hashKey := e.Config.CookieSecret
+	encKey := sha256.Sum256(append([]byte("enc:"), e.Config.CookieSecret...))
+	sc := securecookie.New(hashKey, encKey[:])
+	val, err := sc.Encode("access_token", struct{ PID string }{PID: "testuser"})
+	if err != nil {
+		t.Fatalf("encode cookie failed: %v", err)
+	}
 
-// 	req := httptest.NewRequest("POST", "/login", nil)
-// 	req.AddCookie(&http.Cookie{Name: "access_token", Value: val})
-// 	w := httptest.NewRecorder()
-// 	r.ServeHTTP(w, req)
+	req := httptest.NewRequest("POST", "/login", nil)
+	req.AddCookie(&http.Cookie{Name: "access_token", Value: val})
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
 
-// 	if w.Code != http.StatusOK {
-// 		t.Fatalf("expected 200, got %d", w.Code)
-// 	}
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d", w.Code)
+	}
 
-// 	var resp map[string]any
-// 	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
-// 		t.Fatalf("json unmarshal failed: %v", err)
-// 	}
+	var resp map[string]any
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("json unmarshal failed: %v", err)
+	}
 
-// 	if resp["code"].(float64) != 200 {
-// 		t.Errorf("expected code 200, got %v", resp["code"])
-// 	}
-// 	if resp["message"].(string) != "success" {
-// 		t.Errorf("expected message 'success', got %v", resp["message"])
-// 	}
-// }
+	if resp["code"].(float64) != 200 {
+		t.Errorf("expected code 200, got %v", resp["code"])
+	}
+	if resp["message"].(string) != "success" {
+		t.Errorf("expected message 'success', got %v", resp["message"])
+	}
+}
 
 type mockUserServer struct{}
 
