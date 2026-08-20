@@ -45,7 +45,7 @@ func (u *mockUser) PutConfirmed(confirmed bool)        { u.Confirmed = confirmed
 func (u *mockUser) PutConfirmVerifier(verifier string) { u.Verifier = verifier }
 
 // mock UserValuer interface
-var _ Requester = (*mockUser)(nil)
+//var _ Requester = (*mockUser)(nil)
 
 // 新增：账号密码登录并发放 Cookie 的测试
 func TestLoginHandler_PasswordLogin_SetsCookie(t *testing.T) {
